@@ -1,0 +1,1 @@
+python ./python/printBoard.py "$@"

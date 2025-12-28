@@ -1,4 +1,3 @@
-from utils import *
 import sys
 
 class GameOfLifeV1:
@@ -20,8 +19,7 @@ class GameOfLifeV1:
         self.board = []
         for i in range(8):
             byte_bits = binary_str[i*8:(i+1)*8]
-            reversed_bits = byte_bits[::-1]  # Reverse bits within this byte
-            row = [bit == '1' for bit in reversed_bits]
+            row = [bit == '1' for bit in byte_bits]
             self.board.append(row)
 
 
@@ -30,8 +28,7 @@ class GameOfLifeV1:
         bits_by_row = []
         for row in self.board:
             row_bits = "".join(str(int(b)) for b in row)
-            reversed_row_bits = row_bits[::-1]  # Reverse bits within this byte
-            bits_by_row.append(reversed_row_bits)
+            bits_by_row.append(row_bits)
         bits = "".join(bits_by_row)
         hex_value = f"{int(bits, 2):016X}"
         print(hex_value)
