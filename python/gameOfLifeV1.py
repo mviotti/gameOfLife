@@ -24,7 +24,6 @@ class GameOfLifeV1:
 
 
     def print(self):
-        # Reverse bits within each byte when converting back to hex
         bits_by_row = []
         for row in self.board:
             row_bits = "".join(str(int(b)) for b in row)
@@ -33,18 +32,18 @@ class GameOfLifeV1:
         hex_value = f"{int(bits, 2):016X}"
         print(hex_value)
 
-    def iterate(self):
-        newboard = [[False for _ in range(self.cols)] for _ in range(self.rows)]
+    def iterate(self, next_board):
+        for i in range(self.rows):
+            for j in range(self.cols):
+                next_board[i][j] = False
 
         for i in range(1, len(self.board)-1):
             for j in range(1, len(self.board[i])-1):
                 num = self.calculateNeighbors(i, j)
                 if num == 3 or (num == 2 and self.board[i][j]):
-                    newboard[i][j] = True
+                    next_board[i][j] = True
                 else:
-                    newboard[i][j] = False
-
-        self.board = newboard
+                    next_board[i][j] = False
 
     def calculateNeighbors(self, i, j):
         return (self.board[i-1][j-1] + self.board[i-1][j] + self.board[i-1][j+1] 
@@ -63,6 +62,9 @@ if __name__ == "__main__":
     y = 8
 
     game = GameOfLifeV1(x, y, initialvalue)
+    next_board = [[False for _ in range(y)] for _ in range(x)]
+
     for i in range(executions):
-        game.iterate()
+        game.iterate(next_board)
+        game.board, next_board = next_board, game.board  # Swap
     game.print()
