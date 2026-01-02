@@ -2,6 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
+#include <immintrin.h>  // Para AVX/AVX2
+#include <x86intrin.h>  // Para BMI1/BMI2, POPCNT, LZCNT
+
 
 int hex_char_to_int(char c) {
     if (c >= '0' && c <= '9') return c - '0';
@@ -29,47 +32,44 @@ int parse_hex_to_bytes(const char *hex_string, uint8_t *bytes) {
     return 0;
 }
 
-int get_cell(uint8_t *board, int row, int col) {
-    if (row < 0 || row >= 8 || col < 0 || col >= 8) {
+int get_cell(uint64_t board, int row, int col) {
+    int position = row * 8 + col;
+    if (position < 8 || position > 54) {
         return 0;
     }
-    int bit_position = col;
-    return (board[row] >> bit_position) & 1;
+    return (board >> (63-position)) & 1;
 }
 
-int count_neighbors(uint8_t *board, int row, int col) {
-    int count = 0;
-    for (int dr = -1; dr <= 1; dr++) {
-        for (int dc = -1; dc <= 1; dc++) {
-            if (dr == 0 && dc == 0) continue; 
-            count += get_cell(board, row + dr, col + dc);
-        }
+int count_neighbors(uint64_t board, int row, int col) {
+    int position = row * 8 + col;
+    if (position < 8 || position > 54) {
+        return 0;
     }
+
+    uint64_t mask = 0xE0A0E00000000000 >> (position - 9);
+    int count = _popcnt64(board & mask); 
     return count;
 }
 
-void evolve(uint8_t *board, uint8_t *next_board) {
-    next_board[0] = 0;
-    next_board[7] = 0;
-
+void evolve(uint64_t board, uint64_t *next_board) {
+    *next_board = 0;
     for (int row = 1; row < 7; row++) {
-        next_board[row] = 0; 
-
         for (int col = 1; col < 7; col++) {
             int alive = get_cell(board, row, col);
             int neighbors = count_neighbors(board, row, col);
 
             if (neighbors == 3 || alive && neighbors == 2) {
-                next_board[row] |= (1 << col);
+                int position = row * 8 + col;
+                *next_board |= (1ULL << (63 - position));
             }
         }
     }
 }
 
 // Imprime el tablero como hexadecimal
-void print_board_hex(uint8_t *board) {
+void print_board_hex(uint64_t board) {
     for (int i = 0; i < 8; i++) {
-        printf("%02X", board[i]);
+        printf("%02X", (board >> (i * 8)) & 0xFF);
     }
     printf("\n");
 }
@@ -88,20 +88,19 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    uint8_t board[8];
-    if (parse_hex_to_bytes(argv[2], board) != 0) {
+    uint8_t old_board[8];
+    if (parse_hex_to_bytes(argv[2], old_board) != 0) {
         return 1;
     }
 
-    // Ejecutar el Game of Life por el número de generaciones especificado
-    uint8_t next_board[8] = {0};
+    uint64_t next_board = 0;
+    uint64_t board = *(uint64_t*)old_board; 
+
     for (int gen = 0; gen < generations; gen++) {
-        evolve(board, next_board);
-        // Copiar next_board a board para la siguiente iteración
-        memcpy(board, next_board, 8);
+        evolve(board, &next_board);
+        board = next_board;
     }
 
-    // Imprimir el estado final
     print_board_hex(board);
 
     return 0;
