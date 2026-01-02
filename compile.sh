@@ -1,0 +1,1 @@
+gcc c/gameOfLifeV1.c -o c/gameOfLifeV1

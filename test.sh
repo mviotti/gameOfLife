@@ -1,4 +1,5 @@
 #!/bin/bash
+./compile.sh
 
 # Colores para output
 GREEN='\033[0;32m'
@@ -9,6 +10,7 @@ NC='\033[0m' # No Color
 # Ejecutables a probar
 EXECUTABLES=(
     "python ./python/gameOfLifeV1.py"
+    "c\gameOfLifeV1.exe"
 )
 
 # Casos de test: generaciones, input, expected_output
