@@ -17,10 +17,11 @@ echo ""
 
 # Array de implementaciones: "nombre;comando"
 IMPLEMENTATIONS=(
-    "Python V1;python ./python/gameOfLifeV1.py"
+#    "Python V1;python ./python/gameOfLifeV1.py"
     "C V1;c/gameOfLifeV1.exe"
     "C Optimized;c/gameOfLifeV1_optimized.exe"
     "C Ryzen Optimized;c/gameOfLifeRyzen_optimized.exe"
+    "Java V1;java -cp java GameOfLifeV1"
 )
 
 # Función para ejecutar y medir tiempo

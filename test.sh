@@ -9,10 +9,11 @@ NC='\033[0m' # No Color
 
 # Ejecutables a probar
 EXECUTABLES=(
-    "python ./python/gameOfLifeV1.py"
+#    "python ./python/gameOfLifeV1.py"
     "c\gameOfLifeV1.exe"
     "c\gameOfLifeV1_optimized.exe"
     "c\gameOfLifeRyzen_optimized.exe"
+    "java -cp java GameOfLifeV1"
 )
 
 # Casos de test: generaciones, input, expected_output
