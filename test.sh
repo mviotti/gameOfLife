@@ -11,6 +11,7 @@ NC='\033[0m' # No Color
 EXECUTABLES=(
     "python ./python/gameOfLifeV1.py"
     "c\gameOfLifeV1.exe"
+    "c\gameOfLifeV1_optimized.exe"
 )
 
 # Casos de test: generaciones, input, expected_output

@@ -49,6 +49,9 @@ int count_neighbors(uint8_t *board, int row, int col) {
 }
 
 void evolve(uint8_t *board, uint8_t *next_board) {
+    next_board[0] = 0;
+    next_board[7] = 0;
+
     for (int row = 1; row < 7; row++) {
         next_board[row] = 0; 
 
@@ -98,7 +101,7 @@ int main(int argc, char *argv[]) {
     }
 
     // Ejecutar el Game of Life por el número de generaciones especificado
-    uint8_t next_board[8];
+    uint8_t next_board[8] = {0};
     for (int gen = 0; gen < generations; gen++) {
         evolve(board, next_board);
         // Copiar next_board a board para la siguiente iteración
