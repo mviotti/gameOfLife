@@ -1,0 +1,20 @@
+// Archivo de restricciones para Tang Primer 20k
+// Formato para nextpnr-himbaechel (Project Apicula)
+// UART a través del USB integrado (chip CH552)
+
+// Reloj del sistema 27 MHz
+IO_LOC "clk" H11;
+IO_PORT "clk" PULL_MODE=UP;
+
+// Reset - Botón S1 (activo bajo)
+IO_LOC "rst_n" T10;
+IO_PORT "rst_n" PULL_MODE=UP;
+
+// UART conectado al CH552 (USB-UART)
+// RX del FPGA (recibe desde PC)
+IO_LOC "uart_rx" C11;
+IO_PORT "uart_rx" PULL_MODE=UP IO_TYPE=LVCMOS33;
+
+// TX del FPGA (transmite a PC)
+IO_LOC "uart_tx" A11;
+IO_PORT "uart_tx" PULL_MODE=UP IO_TYPE=LVCMOS33;
