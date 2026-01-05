@@ -7,7 +7,7 @@ YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
 # Parámetros del test
-GENERATIONS=1000000
+GENERATIONS=100000000
 INITIAL_STATE="0006066060181800"
 
 echo "========================================"
@@ -18,8 +18,9 @@ echo ""
 # Array de implementaciones: "nombre;comando"
 IMPLEMENTATIONS=(
 #    "Python V1;python ./python/gameOfLifeV1.py"
-    "C V1;c/gameOfLifeV1.exe"
+#    "C V1;c/gameOfLifeV1.exe"
     "C Optimized;c/gameOfLifeV1_optimized.exe"
+    "C Bit Optimized;c/gameOfLifeBit_optimized.exe"
     "C Ryzen Optimized;c/gameOfLifeRyzen_optimized.exe"
     "Java V1;java -cp java GameOfLifeV1"
 )

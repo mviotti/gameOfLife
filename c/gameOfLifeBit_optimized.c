@@ -2,9 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
-#include <immintrin.h>  // Para AVX/AVX2
-#include <x86intrin.h>  // Para BMI1/BMI2, POPCNT, LZCNT
-
+#include <immintrin.h>
 
 int hex_char_to_int(char c) {
     if (c >= '0' && c <= '9') return c - '0';
@@ -51,28 +49,14 @@ int count_neighbors(uint64_t board, int row, int col) {
     return count;
 }
 
-void count_neighbors_array(uint64_t board, uint8_t *neighbors) {
-    int position = 0;
-    for (int row = 1; row < 7; row++) {
-        for (int col = 1; col < 7; col++) {
-            position = row * 8 + col;
-            neighbors[position] = _popcnt64(board &  (0xE0A0E00000000000 >> (position - 9)));
-        }
-    }
-}
-
-void evolve(uint64_t board, uint64_t *next_board, uint8_t *neighbors) {
+void evolve(uint64_t board, uint64_t *next_board) {
     *next_board = 0;
-    //zero neighbors array
-    memset(neighbors, 0, 64 * sizeof(uint8_t));
-    count_neighbors_array(board, neighbors);
-
     for (int row = 1; row < 7; row++) {
         for (int col = 1; col < 7; col++) {
             int alive = get_cell(board, row, col);
-            int neighbors_count = neighbors[(row * 8) + col];
+            int neighbors = count_neighbors(board, row, col);
 
-            if (neighbors_count == 3 || alive && neighbors_count == 2) {
+            if (neighbors == 3 || alive && neighbors == 2) {
                 int position = row * 8 + col;
                 *next_board |= (1ULL << (63 - position));
             }
@@ -109,10 +93,9 @@ int main(int argc, char *argv[]) {
 
     uint64_t next_board = 0;
     uint64_t board = *(uint64_t*)old_board; 
-    uint8_t neighbohors[64];
 
     for (int gen = 0; gen < generations; gen++) {
-        evolve(board, &next_board, neighbohors);
+        evolve(board, &next_board);
         board = next_board;
     }
 
